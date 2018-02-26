@@ -4,6 +4,7 @@ require 'pp'
 require 'open-uri'
 require 'nokogiri'
 
+# Amazon prime video page 1
 url = 'https://www.amazon.co.jp/s/ref=sr_rot_p_n_ways_to_watch_0?fst=as%3Aoff&rh=n%3A2351649051%2Cp_n_feature_twenty_browse-bin%3A2317600051%2Cp_n_entity_type%3A4174098051%2Cp_n_ways_to_watch%3A3746328051&bbn=2351649051&ie=UTF8&qid=1518757785&rnid=3746327051'
 
 proxy = nil
@@ -26,7 +27,8 @@ disp_list = {
   'playing_time1'       => 'div[2]/div[2]/div[4]/div/div[2]/span',
 }
 
-n = 0
+page      = 0
+cnt_title = 0
 
 loop do
   # https://docs.ruby-lang.org/ja/latest/library/open=2duri.html
@@ -40,17 +42,19 @@ loop do
     exit
   end
 
+  page += 1
   xpath = '//*[contains(@id,"result")]/div/div/div/div[2]'
   elements = document.xpath(xpath)
 
   elements.each do |element|
     puts '*****'
+    puts "page[#{page}]: #{url}"
     disp_list.each do |k,xpath|
       value = element.xpath(xpath).text
       case k
       when 'title'
-        n += 1
-        puts "#{k}[#{n}]: #{value}"
+        cnt_title += 1
+        puts "#{k}[#{cnt_title}]: #{value}"
       when 'year','price','star_rating','comment'
         puts "#{k}: #{value}"
       when 'starring','director','playing_time0'
@@ -78,5 +82,5 @@ loop do
 #   puts "url: #{url}"
   end
 
-  sleep 2
+  sleep 5
 end
